@@ -144,6 +144,15 @@ function analyse(){
 
   const clearedRate = arrivals ? (((recruited + inCity) / arrivals) * 100) : 0;
 
+  // ---- UK TIME CHECK ----
+  const now = new Date();
+  const ukHour = new Date(
+    now.toLocaleString("en-GB", { timeZone: "Europe/London" })
+  ).getHours();
+
+  const prePeak = (ukHour >= 19 && ukHour < 20);   // 7–8pm
+  const peak = (ukHour >= 20 && ukHour < 22);      // 8–10pm
+
   let status="", priority="", priorityClass="";
   let situation="", rightNow="", panelRule="";
   let nextSteps=[];
@@ -153,29 +162,54 @@ function analyse(){
     priority="Low";
     priorityClass="low";
     situation="No intake entered.";
-    rightNow="Enter arrivals, recruited, and in-city.";
+    rightNow="Enter live numbers.";
+    nextSteps=["Input arrivals.","Update panel numbers."];
+  }
+
+  // ----- PEAK MODE (STRICT) -----
+  else if (peak && (inCity > 0 || lossRate > 10)) {
+    status="PEAK MODE – PANEL MUST BE CLEAR";
+    priority="Critical";
+    priorityClass="critical";
+    situation="Peak hours active (8–10pm). Structure must be clean.";
+    rightNow="Clear panel immediately. No RP.";
+    panelRule="Peak time tolerance is lower. Panel must be zero.";
     nextSteps=[
-      "Input live intake numbers.",
-      "Update as arrivals change."
+      "Recruit all in-city now.",
+      "Protect green dots.",
+      "Stabilise before continuing."
     ];
   }
 
-  // CRITICAL LOSS (Real problem)
+  // ----- PRE-PEAK WARNING -----
+  else if (prePeak && inCity > 2) {
+    status="PRE-PEAK PREP";
+    priority="High";
+    priorityClass="high";
+    situation="Approaching peak. Panel too heavy.";
+    rightNow="Start clearing before 8pm.";
+    panelRule="Panel must be light before peak hits.";
+    nextSteps=[
+      "Reduce in-city to near zero.",
+      "Increase recruitment pace.",
+      "Be stable by 8pm."
+    ];
+  }
+
+  // ----- CRITICAL LOSS -----
   else if (lossRate >= 20) {
     status="STRUCTURE BREAKING";
     priority="Critical";
     priorityClass="critical";
-    situation="High beginner loss. Recruitment cycle failing.";
-    rightNow="Stop RP immediately. Stabilise intake.";
-    panelRule="Loss above 20% is unacceptable.";
+    situation="High beginner loss.";
+    rightNow="Full recruitment focus.";
     nextSteps=[
-      "Full focus on recruiting.",
-      "Assign F1 instantly.",
-      "Rebuild structure before anything else."
+      "Stop RP.",
+      "Stabilise intake immediately."
     ];
   }
 
-  // WARNING LOSS (Needs attention)
+  // ----- WARNING LOSS -----
   else if (lossRate >= 13) {
     status="LOSSES RISING";
     priority="High";
@@ -184,63 +218,32 @@ function analyse(){
     rightNow="Increase recruitment speed.";
     nextSteps=[
       "Recruit on contact.",
-      "Avoid panel delays.",
-      "Protect green dots."
+      "Prevent delays."
     ];
   }
 
-  // PANEL STACKING
-  else if (inCity > Math.ceil(arrivals * 0.20)) {
-    status="PANEL STACKING";
-    priority="Medium";
-    priorityClass="medium";
-    situation="Too many beginners waiting in-city.";
-    rightNow="Clear panel before RP.";
-    panelRule="Stacked panel slows cycle.";
-    nextSteps=[
-      "Recruit in-city now.",
-      "Assign F1 quickly.",
-      "Then resume RP."
-    ];
-  }
-
-  // STRONG STRUCTURE
+  // ----- STRONG STRUCTURE -----
   else if (recruitmentRate >= 85 && lossRate <= 12) {
     status="STRUCTURE STABLE";
     priority="Low";
     priorityClass="low";
     situation="Healthy recruitment and controlled loss.";
-    rightNow="Maintain pace. Monitor panel.";
+    rightNow="Maintain pace and monitor.";
     nextSteps=[
-      "Keep spread at pier.",
-      "Recruit instantly on arrival.",
-      "Check panel every few minutes."
+      "Keep pier covered.",
+      "Assign F1 quickly."
     ];
   }
 
-  // ELITE STRUCTURE
-  else if (recruitmentRate >= 95 && lossRate === 0) {
-    status="STRUCTURE LOCKED";
-    priority="Low";
-    priorityClass="low";
-    situation="No loss. Maximum control.";
-    rightNow="You may RP. Stay alert.";
-    nextSteps=[
-      "Maintain intake discipline.",
-      "Clip green dots consistently."
-    ];
-  }
-
-  // DEFAULT
   else {
     status="STRUCTURE ACTIVE";
     priority="Low";
     priorityClass="low";
-    situation="Within normal operating range.";
-    rightNow="Recruit clean. Monitor changes.";
+    situation="Within operational range.";
+    rightNow="Recruit clean.";
     nextSteps=[
-      "Keep cycle steady.",
-      "Prevent unnecessary loss."
+      "Maintain pace.",
+      "Monitor panel."
     ];
   }
 
@@ -265,7 +268,7 @@ function analyse(){
 
     <div class="sectionTitle">If Panel Cleared Now</div>
     ${clearedLine}<br>
-    ${inCity > 0 ? "Clear panel now to strengthen rate." : "Panel already clear."}
+    ${inCity > 0 ? "Clear panel now to strengthen structure." : "Panel already stable."}
   `;
 }
 
