@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WallStreet Calculator</title>
+<style>
+*{box-sizing:border-box}
+
+html, body{
+    height:100%;
+    margin:0;
+}
+
+body{
+    min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+    background:linear-gradient(180deg,#0e1015,#141a25);
+    background-attachment:fixed;
+    color:#f2f4f8;
+}
+
+.container{
+    max-width:1000px;
+    margin:60px auto;
+    padding:0 20px;
+}
+h1{margin-bottom:40px;font-weight:600;}
+.section{margin-bottom:40px;}
+
+.inputs{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+input{
+    background:#1c2330;
+    border:1px solid #2e394d;
+    border-radius:16px;
+    padding:18px;
+    font-size:18px;
+    color:#fff;
+    transition:.25s ease;
+}
+input:hover{transform:scale(1.03)}
+input:focus{
+    outline:none;
+    border-color:#4f7cff;
+    box-shadow:0 0 0 2px rgba(79,124,255,.2);
+}
+
+.snapshot{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.card{
+    background:#1c2330;
+    border:1px solid #2e394d;
+    border-radius:22px;
+    padding:30px;
+    transition:.25s ease;
+}
+.card:hover{
+    transform:scale(1.04);
+    border-color:#4f7cff;
+}
+.label{font-size:12px;opacity:.6;margin-bottom:8px;}
+.value{font-size:44px;font-weight:600;}
+
+.analysis{
+    background:#1c2330;
+    border:1px solid #2e394d;
+    border-radius:22px;
+    padding:25px;
+}
+
+.status{font-size:18px;font-weight:700;margin-bottom:6px;}
+.priority{margin-bottom:12px;font-weight:600;}
+.low{color:#4caf50}
+.medium{color:#ffc107}
+.high{color:#ff7043}
+.critical{color:#ff5252}
+
+.sectionTitle{font-weight:700;margin-top:15px;margin-bottom:6px;}
+.small{font-size:13px;opacity:.7;margin-top:12px;}
+.warning{color:#ff5252;font-weight:700;margin-top:8px;}
+.note{opacity:.85;}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>WallStreet Calculator</h1>
+
+<div class="section">
+  <div class="inputs">
+    <input id="arrivals" type="number" placeholder="Arrivals">
+    <input id="recruited" type="number" placeholder="Recruited">
+    <input id="incity" type="number" placeholder="In-City">
+  </div>
+</div>
+
+<div class="section snapshot">
+  <div class="card">
+    <div class="label">RECRUITMENT RATE</div>
+    <div class="value" id="rateVal">0%</div>
+  </div>
+  <div class="card">
+    <div class="label">BEGINNER LOSS RATE</div>
+    <div class="value" id="lossVal">0%</div>
+  </div>
+  <div class="card">
+    <div class="label">BEGINNERS LOST</div>
+    <div class="value" id="lostVal">0</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="analysis" id="analysisBox">
+    Enter numbers to view operational guidance.
+  </div>
+</div>
+
+</div>
+
+<script>
+function analyse(){
+
+  const arrivals = Number(document.getElementById("arrivals").value) || 0;
+  const recruited = Number(document.getElementById("recruited").value) || 0;
+  const inCity = Number(document.getElementById("incity").value) || 0;
+
+  const lost = Math.max(arrivals - recruited - inCity, 0);
+  document.getElementById("lostVal").textContent = lost;
+
+  const recruitmentRate = arrivals ? ((recruited / arrivals) * 100) : 0;
+  const lossRate = arrivals ? ((lost / arrivals) * 100) : 0;
+
+  document.getElementById("rateVal").textContent = recruitmentRate.toFixed(1) + "%";
+  document.getElementById("lossVal").textContent = lossRate.toFixed(1) + "%";
+
+  const clearedRate = arrivals ? (((recruited + inCity) / arrivals) * 100) : 0;
+
+  let status="", priority="", priorityClass="";
+  let situation="", rightNow="", panelRule="";
+  let nextSteps=[];
+
+  if (arrivals === 0) {
+    status="AWAITING NUMBERS";
+    priority="Low";
+    priorityClass="low";
+    situation="No intake entered.";
+    rightNow="Enter arrivals, recruited, and in-city.";
+    nextSteps=[
+      "Input live intake numbers.",
+      "Update as arrivals change."
+    ];
+  }
+
+  // CRITICAL LOSS (Real problem)
+  else if (lossRate >= 20) {
+    status="STRUCTURE BREAKING";
+    priority="Critical";
+    priorityClass="critical";
+    situation="High beginner loss. Recruitment cycle failing.";
+    rightNow="Stop RP immediately. Stabilise intake.";
+    panelRule="Loss above 20% is unacceptable.";
+    nextSteps=[
+      "Full focus on recruiting.",
+      "Assign F1 instantly.",
+      "Rebuild structure before anything else."
+    ];
+  }
+
+  // WARNING LOSS (Needs attention)
+  else if (lossRate >= 13) {
+    status="LOSSES RISING";
+    priority="High";
+    priorityClass="high";
+    situation="Loss above healthy range.";
+    rightNow="Increase recruitment speed.";
+    nextSteps=[
+      "Recruit on contact.",
+      "Avoid panel delays.",
+      "Protect green dots."
+    ];
+  }
+
+  // PANEL STACKING
+  else if (inCity > Math.ceil(arrivals * 0.20)) {
+    status="PANEL STACKING";
+    priority="Medium";
+    priorityClass="medium";
+    situation="Too many beginners waiting in-city.";
+    rightNow="Clear panel before RP.";
+    panelRule="Stacked panel slows cycle.";
+    nextSteps=[
+      "Recruit in-city now.",
+      "Assign F1 quickly.",
+      "Then resume RP."
+    ];
+  }
+
+  // STRONG STRUCTURE
+  else if (recruitmentRate >= 85 && lossRate <= 12) {
+    status="STRUCTURE STABLE";
+    priority="Low";
+    priorityClass="low";
+    situation="Healthy recruitment and controlled loss.";
+    rightNow="Maintain pace. Monitor panel.";
+    nextSteps=[
+      "Keep spread at pier.",
+      "Recruit instantly on arrival.",
+      "Check panel every few minutes."
+    ];
+  }
+
+  // ELITE STRUCTURE
+  else if (recruitmentRate >= 95 && lossRate === 0) {
+    status="STRUCTURE LOCKED";
+    priority="Low";
+    priorityClass="low";
+    situation="No loss. Maximum control.";
+    rightNow="You may RP. Stay alert.";
+    nextSteps=[
+      "Maintain intake discipline.",
+      "Clip green dots consistently."
+    ];
+  }
+
+  // DEFAULT
+  else {
+    status="STRUCTURE ACTIVE";
+    priority="Low";
+    priorityClass="low";
+    situation="Within normal operating range.";
+    rightNow="Recruit clean. Monitor changes.";
+    nextSteps=[
+      "Keep cycle steady.",
+      "Prevent unnecessary loss."
+    ];
+  }
+
+  let stepsHTML="";
+  nextSteps.forEach(s=>stepsHTML+="• "+s+"<br>");
+
+  let clearedLine=`Recruitment rate would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+
+  document.getElementById("analysisBox").innerHTML=`
+    <div class="status">${status}</div>
+    <div class="priority ${priorityClass}">Priority: ${priority}</div>
+
+    <div class="sectionTitle">Situation</div>
+    ${situation}
+
+    <div class="sectionTitle">Right Now</div>
+    ${rightNow}
+    ${panelRule ? `<div class="warning">${panelRule}</div>` : ""}
+
+    <div class="sectionTitle">Next Steps</div>
+    ${stepsHTML}
+
+    <div class="sectionTitle">If Panel Cleared Now</div>
+    ${clearedLine}<br>
+    ${inCity > 0 ? "Clear panel now to strengthen rate." : "Panel already clear."}
+  `;
+}
+
+document.getElementById("arrivals").addEventListener("input", analyse);
+document.getElementById("recruited").addEventListener("input", analyse);
+document.getElementById("incity").addEventListener("input", analyse);
+</script>
+</body>
+</html>
