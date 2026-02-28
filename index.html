@@ -1,280 +1,248 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>WallStreet Calculator</title>
-<style>
-*{box-sizing:border-box}
-
-html, body{
-    height:100%;
-    margin:0;
-}
-
-body{
-    min-height:100vh;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-    background:linear-gradient(180deg,#0e1015,#141a25);
-    background-attachment:fixed;
-    color:#f2f4f8;
-}
-
-.container{
-    max-width:1000px;
-    margin:60px auto;
-    padding:0 20px;
-}
-h1{margin-bottom:40px;font-weight:600;}
-.section{margin-bottom:40px;}
-
-.inputs{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-}
-
-input{
-    background:#1c2330;
-    border:1px solid #2e394d;
-    border-radius:16px;
-    padding:18px;
-    font-size:18px;
-    color:#fff;
-    transition:.25s ease;
-}
-input:hover{transform:scale(1.03)}
-input:focus{
-    outline:none;
-    border-color:#4f7cff;
-    box-shadow:0 0 0 2px rgba(79,124,255,.2);
-}
-
-.snapshot{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-}
-
-.card{
-    background:#1c2330;
-    border:1px solid #2e394d;
-    border-radius:22px;
-    padding:30px;
-    transition:.25s ease;
-}
-.card:hover{
-    transform:scale(1.04);
-    border-color:#4f7cff;
-}
-.label{font-size:12px;opacity:.6;margin-bottom:8px;}
-.value{font-size:44px;font-weight:600;}
-
-.analysis{
-    background:#1c2330;
-    border:1px solid #2e394d;
-    border-radius:22px;
-    padding:25px;
-}
-
-.status{font-size:18px;font-weight:700;margin-bottom:6px;}
-.priority{margin-bottom:12px;font-weight:600;}
-.low{color:#4caf50}
-.medium{color:#ffc107}
-.high{color:#ff7043}
-.critical{color:#ff5252}
-
-.sectionTitle{font-weight:700;margin-top:15px;margin-bottom:6px;}
-.small{font-size:13px;opacity:.7;margin-top:12px;}
-.warning{color:#ff5252;font-weight:700;margin-top:8px;}
-.note{opacity:.85;}
-</style>
+  <meta charset="UTF-8">
+  <title>WallStreet Calculator</title>
+  <style>
+    *{box-sizing:border-box}
+    html, body{
+        height:100%;
+        margin:0;
+    }
+    body{
+        min-height:100vh;
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+        background:linear-gradient(180deg,#0e1015,#141a25);
+        background-attachment:fixed;
+        color:#f2f4f8;
+    }
+    .container{
+        max-width:1000px;
+        margin:60px auto;
+        padding:0 20px;
+    }
+    h1{margin-bottom:40px;font-weight:600;}
+    .section{margin-bottom:40px;}
+    .inputs{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:20px;
+    }
+    input{
+        background:#1c2330;
+        border:1px solid #2e394d;
+        border-radius:16px;
+        padding:18px;
+        font-size:18px;
+        color:#fff;
+        transition:.25s ease;
+    }
+    input:hover{transform:scale(1.03)}
+    input:focus{
+        outline:none;
+        border-color:#4f7cff;
+        box-shadow:0 0 0 2px rgba(79,124,255,.2);
+    }
+    .snapshot{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:20px;
+    }
+    .card{
+        background:#1c2330;
+        border:1px solid #2e394d;
+        border-radius:22px;
+        padding:30px;
+        transition:.25s ease;
+    }
+    .card:hover{
+        transform:scale(1.04);
+        border-color:#4f7cff;
+    }
+    .label{font-size:12px;opacity:.6;margin-bottom:8px;}
+    .value{font-size:44px;font-weight:600;}
+    .analysis{
+        background:#1c2330;
+        border:1px solid #2e394d;
+        border-radius:22px;
+        padding:25px;
+    }
+    .status{font-size:18px;font-weight:700;margin-bottom:6px;}
+    .priority{margin-bottom:12px;font-weight:600;}
+    .low{color:#4caf50}
+    .medium{color:#ffc107}
+    .high{color:#ff7043}
+    .critical{color:#ff5252}
+    .sectionTitle{font-weight:700;margin-top:15px;margin-bottom:6px;}
+    .small{font-size:13px;opacity:.7;margin-top:12px;}
+    .warning{color:#ff5252;font-weight:700;margin-top:8px;}
+    .note{opacity:.85;}
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>WallStreet Calculator</h1>
 
-<div class="container">
+    <div class="section">
+      <div class="inputs">
+        <input id="arrivals" type="number" placeholder="Arrivals">
+        <input id="recruited" type="number" placeholder="Recruited">
+        <input id="incity" type="number" placeholder="In-City">
+      </div>
+    </div>
 
-<h1>WallStreet Calculator</h1>
+    <div class="section snapshot">
+      <div class="card">
+        <div class="label">RECRUITMENT RATE</div>
+        <div class="value" id="rateVal">0%</div>
+      </div>
+      <div class="card">
+        <div class="label">BEGINNER LOSS RATE</div>
+        <div class="value" id="lossVal">0%</div>
+      </div>
+      <div class="card">
+        <div class="label">BEGINNERS LOST</div>
+        <div class="value" id="lostVal">0</div>
+      </div>
+    </div>
 
-<div class="section">
-  <div class="inputs">
-    <input id="arrivals" type="number" placeholder="Arrivals">
-    <input id="recruited" type="number" placeholder="Recruited">
-    <input id="incity" type="number" placeholder="In-City">
+    <div class="section">
+      <div class="analysis" id="analysisBox">
+        Enter numbers to view operational guidance.
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="section snapshot">
-  <div class="card">
-    <div class="label">RECRUITMENT RATE</div>
-    <div class="value" id="rateVal">0%</div>
-  </div>
-  <div class="card">
-    <div class="label">BEGINNER LOSS RATE</div>
-    <div class="value" id="lossVal">0%</div>
-  </div>
-  <div class="card">
-    <div class="label">BEGINNERS LOST</div>
-    <div class="value" id="lostVal">0</div>
-  </div>
-</div>
+  <script>
+    function analyse() {
+      const arrivals = Number(document.getElementById("arrivals").value) || 0;
+      const recruited = Number(document.getElementById("recruited").value) || 0;
+      const inCity = Number(document.getElementById("incity").value) || 0;
 
-<div class="section">
-  <div class="analysis" id="analysisBox">
-    Enter numbers to view operational guidance.
-  </div>
-</div>
+      const lost = Math.max(arrivals - recruited - inCity, 0);
+      document.getElementById("lostVal").textContent = lost;
 
-</div>
+      const recruitmentRate = arrivals ? ((recruited / arrivals) * 100) : 0;
+      const lossRate = arrivals ? ((lost / arrivals) * 100) : 0;
 
-<script>
-function analyse(){
+      document.getElementById("rateVal").textContent = recruitmentRate.toFixed(1) + "%";
+      document.getElementById("lossVal").textContent = lossRate.toFixed(1) + "%";
 
-  const arrivals = Number(document.getElementById("arrivals").value) || 0;
-  const recruited = Number(document.getElementById("recruited").value) || 0;
-  const inCity = Number(document.getElementById("incity").value) || 0;
+      const clearedRate = arrivals ? (((recruited + inCity) / arrivals) * 100) : 0;
 
-  const lost = Math.max(arrivals - recruited - inCity, 0);
-  document.getElementById("lostVal").textContent = lost;
+      // ---- UK TIME CHECK ----
+      const now = new Date();
+      const ukHour = new Date(
+        now.toLocaleString("en-GB", { timeZone: "Europe/London" })
+      ).getHours();
 
-  const recruitmentRate = arrivals ? ((recruited / arrivals) * 100) : 0;
-  const lossRate = arrivals ? ((lost / arrivals) * 100) : 0;
+      const prePeak = (ukHour >= 19 && ukHour < 20);   // 7–8pm
+      const peak = (ukHour >= 20 && ukHour < 22);      // 8–10pm
 
-  document.getElementById("rateVal").textContent = recruitmentRate.toFixed(1) + "%";
-  document.getElementById("lossVal").textContent = lossRate.toFixed(1) + "%";
+      let status="", priority="", priorityClass="";
+      let situation="", rightNow="", panelRule="";
+      let nextSteps=[];
 
-  const clearedRate = arrivals ? (((recruited + inCity) / arrivals) * 100) : 0;
+      if (arrivals === 0) {
+        status="AWAITING NUMBERS";
+        priority="Low";
+        priorityClass="low";
+        situation="No intake entered.";
+        rightNow="Enter live numbers.";
+        nextSteps=["Input arrivals.","Update panel numbers."];
+      }
 
-  // ---- UK TIME CHECK ----
-  const now = new Date();
-  const ukHour = new Date(
-    now.toLocaleString("en-GB", { timeZone: "Europe/London" })
-  ).getHours();
+      // ----- PEAK MODE (STRICT) -----
+      else if (peak && (inCity > 0 || lossRate > 10)) {
+        status="PEAK MODE – PANEL MUST BE CLEAR";
+        priority="Critical";
+        priorityClass="critical";
+        situation="Peak hours active (8–10pm). Structure must be clean.";
+        rightNow="Clear panel immediately. No RP.";
+        panelRule="Peak time tolerance is lower. Panel must be zero.";
+        nextSteps=[
+          "Recruit all in-city now.",
+          "Protect green dots.",
+          "Stabilise before continuing."
+        ];
+      }
 
-  const prePeak = (ukHour >= 19 && ukHour < 20);   // 7–8pm
-  const peak = (ukHour >= 20 && ukHour < 22);      // 8–10pm
+      // ----- PRE-PEAK WARNING -----
+      else if (prePeak && inCity > 2) {
+        status="PRE-PEAK PREP";
+        priority="High";
+        priorityClass="high";
+        situation="Approaching peak. Panel too heavy.";
+        rightNow="Start clearing before 8pm.";
+        panelRule="Panel must be light before peak hits.";
+        nextSteps=[
+          "Reduce in-city to near zero.",
+          "Increase recruitment pace.",
+          "Be stable by 8pm."
+        ];
+      }
 
-  let status="", priority="", priorityClass="";
-  let situation="", rightNow="", panelRule="";
-  let nextSteps=[];
+      // ----- LOSS RATE CHECK - ADDED BASED ON YOUR REQUEST -----
+      else if (lossRate < 15) {
+        status="STRUCTURE STABLE";
+        priority="Low";
+        priorityClass="low";
+        situation="Loss rate is within acceptable range.";
+        rightNow="Continue as normal.";
+        nextSteps=[ "Maintain recruitment pace.", "Monitor panel regularly." ];
+      }
 
-  if (arrivals === 0) {
-    status="AWAITING NUMBERS";
-    priority="Low";
-    priorityClass="low";
-    situation="No intake entered.";
-    rightNow="Enter live numbers.";
-    nextSteps=["Input arrivals.","Update panel numbers."];
-  }
+      // ----- MEDIUM THREAT (15% to 22%) -----
+      else if (lossRate >= 15 && lossRate < 22) {
+        status="MEDIUM THREAT – LOSS RATE RISING";
+        priority="Medium";
+        priorityClass="medium";
+        situation="Loss rate is rising but not critical yet.";
+        rightNow="Increase recruitment speed. Prevent further loss.";
+        nextSteps=[
+          "Recruit faster.",
+          "Monitor loss rate closely."
+        ];
+      }
 
-  // ----- PEAK MODE (STRICT) -----
-  else if (peak && (inCity > 0 || lossRate > 10)) {
-    status="PEAK MODE – PANEL MUST BE CLEAR";
-    priority="Critical";
-    priorityClass="critical";
-    situation="Peak hours active (8–10pm). Structure must be clean.";
-    rightNow="Clear panel immediately. No RP.";
-    panelRule="Peak time tolerance is lower. Panel must be zero.";
-    nextSteps=[
-      "Recruit all in-city now.",
-      "Protect green dots.",
-      "Stabilise before continuing."
-    ];
-  }
+      // ----- BIG PROBLEM (Loss rate > 22%) -----
+      else if (lossRate >= 22) {
+        status="STRUCTURE BREAKING";
+        priority="Critical";
+        priorityClass="critical";
+        situation="Loss rate is critically high.";
+        rightNow="Focus all efforts on stabilising recruitment.";
+        nextSteps=[ "Stop RP.", "Stabilise intake immediately." ];
+      }
 
-  // ----- PRE-PEAK WARNING -----
-  else if (prePeak && inCity > 2) {
-    status="PRE-PEAK PREP";
-    priority="High";
-    priorityClass="high";
-    situation="Approaching peak. Panel too heavy.";
-    rightNow="Start clearing before 8pm.";
-    panelRule="Panel must be light before peak hits.";
-    nextSteps=[
-      "Reduce in-city to near zero.",
-      "Increase recruitment pace.",
-      "Be stable by 8pm."
-    ];
-  }
+      let stepsHTML="";
+      nextSteps.forEach(s=>stepsHTML+="• "+s+"<br>");
 
-  // ----- CRITICAL LOSS -----
-  else if (lossRate >= 20) {
-    status="STRUCTURE BREAKING";
-    priority="Critical";
-    priorityClass="critical";
-    situation="High beginner loss.";
-    rightNow="Full recruitment focus.";
-    nextSteps=[
-      "Stop RP.",
-      "Stabilise intake immediately."
-    ];
-  }
+      let clearedLine=`Recruitment rate would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
 
-  // ----- WARNING LOSS -----
-  else if (lossRate >= 13) {
-    status="LOSSES RISING";
-    priority="High";
-    priorityClass="high";
-    situation="Loss above healthy range.";
-    rightNow="Increase recruitment speed.";
-    nextSteps=[
-      "Recruit on contact.",
-      "Prevent delays."
-    ];
-  }
+      document.getElementById("analysisBox").innerHTML=`
+        <div class="status">${status}</div>
+        <div class="priority ${priorityClass}">Priority: ${priority}</div>
 
-  // ----- STRONG STRUCTURE -----
-  else if (recruitmentRate >= 85 && lossRate <= 12) {
-    status="STRUCTURE STABLE";
-    priority="Low";
-    priorityClass="low";
-    situation="Healthy recruitment and controlled loss.";
-    rightNow="Maintain pace and monitor.";
-    nextSteps=[
-      "Keep pier covered.",
-      "Assign F1 quickly."
-    ];
-  }
+        <div class="sectionTitle">Situation</div>
+        ${situation}
 
-  else {
-    status="STRUCTURE ACTIVE";
-    priority="Low";
-    priorityClass="low";
-    situation="Within operational range.";
-    rightNow="Recruit clean.";
-    nextSteps=[
-      "Maintain pace.",
-      "Monitor panel."
-    ];
-  }
+        <div class="sectionTitle">Right Now</div>
+        ${rightNow}
+        ${panelRule ? `<div class="warning">${panelRule}</div>` : ""}
 
-  let stepsHTML="";
-  nextSteps.forEach(s=>stepsHTML+="• "+s+"<br>");
+        <div class="sectionTitle">Next Steps</div>
+        ${stepsHTML}
 
-  let clearedLine=`Recruitment rate would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+        <div class="sectionTitle">If Panel Cleared Now</div>
+        ${clearedLine}<br>
+        ${inCity > 0 ? "Clear panel now to strengthen structure." : "Panel already stable."}
+      `;
+    }
 
-  document.getElementById("analysisBox").innerHTML=`
-    <div class="status">${status}</div>
-    <div class="priority ${priorityClass}">Priority: ${priority}</div>
-
-    <div class="sectionTitle">Situation</div>
-    ${situation}
-
-    <div class="sectionTitle">Right Now</div>
-    ${rightNow}
-    ${panelRule ? `<div class="warning">${panelRule}</div>` : ""}
-
-    <div class="sectionTitle">Next Steps</div>
-    ${stepsHTML}
-
-    <div class="sectionTitle">If Panel Cleared Now</div>
-    ${clearedLine}<br>
-    ${inCity > 0 ? "Clear panel now to strengthen structure." : "Panel already stable."}
-  `;
-}
-
-document.getElementById("arrivals").addEventListener("input", analyse);
-document.getElementById("recruited").addEventListener("input", analyse);
-document.getElementById("incity").addEventListener("input", analyse);
-</script>
+    document.getElementById("arrivals").addEventListener("input", analyse);
+    document.getElementById("recruited").addEventListener("input", analyse);
+    document.getElementById("incity").addEventListener("input", analyse);
+  </script>
 </body>
 </html>
