@@ -130,76 +130,49 @@
 
       const clearedRate = arrivals ? (((recruited + inCity) / arrivals) * 100) : 0;
 
-      // ---- UK TIME CHECK ----
-      const now = new Date();
-      const ukHour = new Date(
-        now.toLocaleString("en-GB", { timeZone: "Europe/London" })
-      ).getHours();
+      let status = "", priority = "", priorityClass = "";
+      let situation = "", rightNow = "", panelRule = "";
+      let nextSteps = [];
 
-      const prePeak = (ukHour >= 19 && ukHour < 20);   // 7–8pm
-      const peak = (ukHour >= 20 && ukHour < 22);      // 8–10pm
-
-      let status="", priority="", priorityClass="";
-      let situation="", rightNow="", panelRule="";
-      let nextSteps=[];
-
-      if (arrivals === 0) {
-        status="AWAITING NUMBERS";
-        priority="Low";
-        priorityClass="low";
-        situation="No intake entered.";
-        rightNow="Enter live numbers.";
-        nextSteps=["Input arrivals.","Update panel numbers."];
-      }
-
-      // ----- PEAK MODE (STRICT) -----
-      else if (peak && (inCity > 0 || lossRate > 10)) {
-        status="PEAK MODE – PANEL MUST BE CLEAR";
-        priority="Critical";
-        priorityClass="critical";
-        situation="Peak hours active (8–10pm). Structure must be clean.";
-        rightNow="Clear panel immediately. No RP.";
-        panelRule="Peak time tolerance is lower. Panel must be zero.";
-        nextSteps=[
+      // ---- PANEL STACKING LOGIC ----
+      if (inCity >= 7) {
+        status = "PANEL STACKED – CLEAR PANEL";
+        priority = "Medium";
+        priorityClass = "medium";
+        situation = "Panel is too full. It must be cleared.";
+        rightNow = "Clear panel immediately to prevent overflow.";
+        panelRule = "Recruit all in-city to clear panel.";
+        nextSteps = [
           "Recruit all in-city now.",
-          "Protect green dots.",
-          "Stabilise before continuing."
+          "Clear the panel to stabilise."
         ];
+
+        // If recruitment is below 90%, increase threat
+        if (recruitmentRate < 90) {
+          priority = "High";
+          priorityClass = "high";
+          nextSteps.push("Recruit faster to prevent further issues.");
+        }
       }
 
-      // ----- PRE-PEAK WARNING -----
-      else if (prePeak && inCity > 2) {
-        status="PRE-PEAK PREP";
-        priority="High";
-        priorityClass="high";
-        situation="Approaching peak. Panel too heavy.";
-        rightNow="Start clearing before 8pm.";
-        panelRule="Panel must be light before peak hits.";
-        nextSteps=[
-          "Reduce in-city to near zero.",
-          "Increase recruitment pace.",
-          "Be stable by 8pm."
-        ];
-      }
-
-      // ----- LOSS RATE CHECK - ADDED BASED ON YOUR REQUEST -----
+      // ----- LOSS RATE CHECK -----
       else if (lossRate < 15) {
-        status="STRUCTURE STABLE";
-        priority="Low";
-        priorityClass="low";
-        situation="Loss rate is within acceptable range.";
-        rightNow="Continue as normal.";
-        nextSteps=[ "Maintain recruitment pace.", "Monitor panel regularly." ];
+        status = "STRUCTURE STABLE";
+        priority = "Low";
+        priorityClass = "low";
+        situation = "Loss rate is within acceptable range.";
+        rightNow = "Continue as normal.";
+        nextSteps = ["Maintain recruitment pace.", "Monitor panel regularly."];
       }
 
       // ----- MEDIUM THREAT (15% to 22%) -----
       else if (lossRate >= 15 && lossRate < 22) {
-        status="MEDIUM THREAT – LOSS RATE RISING";
-        priority="Medium";
-        priorityClass="medium";
-        situation="Loss rate is rising but not critical yet.";
-        rightNow="Increase recruitment speed. Prevent further loss.";
-        nextSteps=[
+        status = "MEDIUM THREAT – LOSS RATE RISING";
+        priority = "Medium";
+        priorityClass = "medium";
+        situation = "Loss rate is rising but not critical yet.";
+        rightNow = "Increase recruitment speed. Prevent further loss.";
+        nextSteps = [
           "Recruit faster.",
           "Monitor loss rate closely."
         ];
@@ -207,20 +180,20 @@
 
       // ----- BIG PROBLEM (Loss rate > 22%) -----
       else if (lossRate >= 22) {
-        status="STRUCTURE BREAKING";
-        priority="Critical";
-        priorityClass="critical";
-        situation="Loss rate is critically high.";
-        rightNow="Focus all efforts on stabilising recruitment.";
-        nextSteps=[ "Stop RP.", "Stabilise intake immediately." ];
+        status = "STRUCTURE BREAKING";
+        priority = "Critical";
+        priorityClass = "critical";
+        situation = "Loss rate is critically high.";
+        rightNow = "Focus all efforts on stabilising recruitment.";
+        nextSteps = ["Stop RP.", "Stabilise intake immediately."];
       }
 
-      let stepsHTML="";
-      nextSteps.forEach(s=>stepsHTML+="• "+s+"<br>");
+      let stepsHTML = "";
+      nextSteps.forEach(s => stepsHTML += "• " + s + "<br>");
 
-      let clearedLine=`Recruitment rate would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+      let clearedLine = `Recruitment rate would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
 
-      document.getElementById("analysisBox").innerHTML=`
+      document.getElementById("analysisBox").innerHTML = `
         <div class="status">${status}</div>
         <div class="priority ${priorityClass}">Priority: ${priority}</div>
 
