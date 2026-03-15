@@ -175,7 +175,7 @@
         "Keep enough coverage at pier for new arrivals",
         "Stabilise recruitment and beginners entering after clearing panel"
       ];
-      clearPanelText = `If panel is cleared now, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+      clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
       note = "This is no longer just a stacked panel. Beginners have already been lost, so the priority is to clear those still in city and prevent further loss.";
     }
 
@@ -192,7 +192,7 @@
         "Keep enough at pier for new arrivals",
         "Balance WallStreet through Pier and Dots when panel cleared"
       ];
-      clearPanelText = `If panel is cleared now, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+      clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
       note = "The panel is stacked and beginner loss is already rising. Help the oldest beginners first before more of them get bored and leave.";
     }
 
@@ -209,7 +209,7 @@
         "Keep enough at pier for new arrivals",
         "Balance WallStreet through Pier and Dots when panel cleared"
       ];
-      clearPanelText = `If panel is cleared now, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+      clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
       note = "A stacked panel means beginners need to be helped before they get bored and leave. Prioritise the oldest beginners first.";
     }
 
@@ -218,7 +218,7 @@
       status = "Panel building and beginner loss is high";
       priority = "High";
       priorityClass = "high";
-      action = "Tighten coverage and stop the panel building further.";
+      action = "Tighten coverage and stop the panel stacking further.";
       reason = "Beginner loss is already too high and the panel is still building.";
       steps = [
         "Keep pier properly covered",
@@ -226,8 +226,8 @@
         "Help the oldest beginners first",
         "Do not let the panel keep growing"
       ];
-      clearPanelText = `If current in-city beginners are recruited, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "Beginners have already been lost and the panel is still building. Tighten coverage now before the situation gets worse.";
+      clearPanelText = `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+      note = "Beginners have already been lost and the panel is still building. Increase coverage now before the situation gets worse.";
     }
 
     // Panel building
@@ -235,7 +235,7 @@
       status = "Panel building";
       priority = "Medium";
       priorityClass = "medium";
-      action = "Split beginner coverage between pier and in-city.";
+      action = "Split beginner coverage between pier and F1 panel.";
       reason = "The panel is starting to build and needs dealing with early.";
       steps = [
         "Keep pier covered",
@@ -243,7 +243,7 @@
         "Help the oldest beginners first",
         "Stop the panel from stacking further - Recruit efficiently"
       ];
-      clearPanelText = `If current in-city beginners are recruited, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
+      clearPanelText = `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
       note = "The panel is building. Deal with it early so beginners are not left sitting long enough to get bored and leave.";
     }
 
@@ -261,7 +261,7 @@
         "Stop anything unnecessary until numbers settle"
       ];
       clearPanelText = inCity > 0
-        ? `If current in-city beginners are recruited, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
+        ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
         : "This is mainly a coverage issue rather than a panel issue right now.";
       note = "At this stage some beginners have already been lost because they were not helped, got bored and left. The priority now is to stabilise and improve the flow from here.";
     }
@@ -280,7 +280,7 @@
         "Do not let beginners sit too long without being helped"
       ];
       clearPanelText = inCity > 0
-        ? `If current in-city beginners are recruited, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
+        ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
         : "There is no significant panel to clear at the moment.";
       note = "This is the warning stage. If beginners are not helped quickly enough, they get bored and start leaving.";
     }
@@ -310,7 +310,7 @@
             "Do not let the panel build unnecessarily"
           ];
       clearPanelText = inCity > 0
-        ? `If current in-city beginners are recruited, coverage would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
+        ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
         : "Panel is already in a good position.";
       note = "This is a good position, but beginners still need to be picked up properly so they are not left waiting, get bored and leave.";
     }
