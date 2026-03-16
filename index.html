@@ -151,7 +151,7 @@
       status = "No active flow";
       priority = "Low";
       priorityClass = "low";
-      action = "Keep coverage at pier and remain ready.";
+      action = "Keep supervision at pier and remain ready for peak time.";
       reason = "There is no current panel pressure.";
       steps = [
         "Keep WS at pier",
@@ -171,8 +171,8 @@
       reason = "The panel is stacked and beginner loss is already high, so this needs dealing with now to prevent further loss.";
       steps = [
         "Recruit beginners in-city immediately",
-        "Help the oldest beginners first",
-        "Keep enough coverage at pier for new arrivals",
+        "Help beginners that have been in city for the longest first",
+        "Keep enough members at pier for new arrivals",
         "Stabilise recruitment and beginners entering after clearing panel"
       ];
       clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
@@ -188,12 +188,12 @@
       reason = "The panel is stacked and beginner loss is already starting to rise.";
       steps = [
         "Recruit beginners in-city immediately",
-        "Help the oldest beginners first",
+        "Help beginners that have been in city for the longest first",
         "Keep enough at pier for new arrivals",
         "Balance WallStreet through Pier and Dots when panel cleared"
       ];
       clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "The panel is stacked and beginner loss is already rising. Help the oldest beginners first before more of them get bored and leave.";
+      note = "The panel is stacked and beginner loss is already rising. Help beginners that have been in city for the longest first before more of them get bored and leave.";
     }
 
     // Panel stacked only
@@ -205,7 +205,7 @@
       reason = "Too many beginners are sitting in-city and need to be helped before they leave.";
       steps = [
         "Recruit beginners in-city immediately",
-        "Help the oldest beginners first",
+        "Help beginners that have been in city for the longest first",
         "Keep enough at pier for new arrivals",
         "Balance WallStreet through Pier and Dots when panel cleared"
       ];
@@ -218,16 +218,16 @@
       status = "Panel building and beginner loss is high";
       priority = "High";
       priorityClass = "high";
-      action = "Tighten coverage and stop the panel stacking further.";
+      action = "Recruit Beginners currently in city + Control beginners flying in at pier";
       reason = "Beginner loss is already too high and the panel is still building.";
       steps = [
         "Keep pier properly covered",
-        "Send people in-city now",
-        "Help the oldest beginners first",
-        "Do not let the panel keep growing"
+        "Clear red + green dots",
+        "Help beginners that have been in city for the longest first",
+        "Do not let the panel keep stacking"
       ];
       clearPanelText = `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "Beginners have already been lost and the panel is still building. Increase coverage now before the situation gets worse.";
+      note = "Beginners have already been lost and the panel is still building. Clear panel and monitor panel before the situation gets worse.";
     }
 
     // Panel building
@@ -240,7 +240,7 @@
       steps = [
         "Keep pier covered",
         "Spread WallStreet onto dots",
-        "Help the oldest beginners first",
+        "Help beginners that have been in city for the longest first",
         "Stop the panel from stacking further - Recruit efficiently"
       ];
       clearPanelText = `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
@@ -252,7 +252,7 @@
       status = "Beginner loss is too high";
       priority = "Critical";
       priorityClass = "critical";
-      action = "Stabilise coverage and recruit the beginners still in city.";
+      action = "Get on dots and recruit the beginners still in city.";
       reason = "Too many beginners have already been lost and the current flow needs recovering.";
       steps = [
         "Make sure pier is properly covered",
@@ -268,16 +268,16 @@
 
     // Medium beginner loss
     else if (beginnerLossRate >= 18) {
-      status = "Coverage needs attention";
+      status = "Do not let more beginners get bored and leave";
       priority = "Medium";
       priorityClass = "medium";
-      action = "Tighten coverage and increase pace.";
+      action = "Clear current panel";
       reason = "Beginner loss is starting to rise and needs correcting now.";
       steps = [
-        "Recruit a bit faster",
+        "Recruit faster and more efficiently",
         "Watch pier more closely",
-        "Help the oldest waiting beginners first",
-        "Do not let beginners sit too long without being helped"
+        "Help the beginners that have been in city for the longest",
+        "Do not let beginners explore alone or they will get bored and leave"
       ];
       clearPanelText = inCity > 0
         ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
@@ -292,27 +292,27 @@
       priorityClass = "low";
       action = inCity <= 1
         ? "Keep the main focus at pier."
-        : "Maintain current coverage.";
+        : "Keep recruiting efficiently.";
       reason = inCity <= 1
         ? "Beginner loss is in a good range and there is little in-city pressure."
         : "Beginner loss is in a good range and the panel is manageable.";
       steps = inCity <= 1
         ? [
             "Keep most people at pier",
-            "Pick up new arrivals quickly",
+            "Recruit beginners efficiently",
             "Only get people on dots if panel starts to stack",
-            "Stay ready for peak time (6-10pm)"
+            "Stay prepared for peak time (6-10pm)"
           ]
         : [
-            "Keep pier covered",
+            "Keep pier supervised",
             "Keep checking in-city",
-            "Help the oldest beginners first",
+            "Help beginners that have been in city for the longest first",
             "Do not let the panel build unnecessarily"
           ];
       clearPanelText = inCity > 0
         ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
         : "Panel is already in a good position.";
-      note = "This is a good position, but beginners still need to be picked up properly so they are not left waiting, get bored and leave.";
+      note = "This is a good position, but beginners still need to be helpd + recruited so they are not left waiting, get bored and leave.";
     }
 
     document.getElementById("analysisBox").innerHTML = `
