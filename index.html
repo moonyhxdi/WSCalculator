@@ -1,126 +1,393 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>WallStreet Calculator</title>
-  <style>
-    *{box-sizing:border-box}
-    html, body{
-      height:100%;
-      margin:0;
-    }
-    body{
-      min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-      background:linear-gradient(180deg,#0e1015,#141a25);
-      background-attachment:fixed;
-      color:#f2f4f8;
-    }
-    .container{
-      max-width:1000px;
-      margin:60px auto;
-      padding:0 20px;
-    }
-    h1{margin-bottom:40px;font-weight:600;}
-    .section{margin-bottom:40px;}
-    .inputs{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:20px;
-    }
-    input{
-      background:#1c2330;
-      border:1px solid #2e394d;
-      border-radius:16px;
-      padding:18px;
-      font-size:18px;
-      color:#fff;
-      transition:.25s ease;
-    }
-    input:hover{transform:scale(1.03)}
-    input:focus{
-      outline:none;
-      border-color:#4f7cff;
-      box-shadow:0 0 0 2px rgba(79,124,255,.2);
-    }
-    .snapshot{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:20px;
-    }
-    .card{
-      background:#1c2330;
-      border:1px solid #2e394d;
-      border-radius:22px;
-      padding:30px;
-      transition:.25s ease;
-    }
-    .card:hover{
-      transform:scale(1.04);
-      border-color:#4f7cff;
-    }
-    .label{font-size:12px;opacity:.6;margin-bottom:8px;}
-    .value{font-size:44px;font-weight:600;}
-    .analysis{
-      background:#1c2330;
-      border:1px solid #2e394d;
-      border-radius:22px;
-      padding:25px;
-      line-height:1.55;
-    }
-    .status{font-size:20px;font-weight:700;margin-bottom:8px;}
-    .priority{margin-bottom:14px;font-weight:600;}
-    .low{color:#4caf50}
-    .medium{color:#ffc107}
-    .high{color:#ff7043}
-    .critical{color:#ff5252}
-    .sectionTitle{font-weight:700;margin-top:16px;margin-bottom:8px;}
-    .step{margin:4px 0;}
-    .small{
-      font-size:13px;
-      opacity:.78;
-      margin-top:14px;
-    }
-    .note{opacity:.9;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WallStreet Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0f13;
+    --panel:transparent;
+    --panel-hi:#1a1e25;
+    --line:#252932;
+    --text:#eceef1;
+    --text-dim:#9198a3;
+    --text-faint:#5b6270;
+    --amber:#e0a744;
+    --teal:#4bc7bd;
+    --green:#4ac47c;
+    --yellow:#e0c04a;
+    --orange:#e8964c;
+    --red:#e3554f;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(900px 500px at 12% -8%, rgba(224,167,68,0.11), transparent 60%),
+      radial-gradient(700px 550px at 100% 105%, rgba(75,199,189,0.07), transparent 60%),
+      radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.6px);
+    background-repeat:no-repeat, no-repeat, repeat;
+    background-size:auto, auto, 26px 26px;
+    background-position:0 0, 0 0, 0 0;
+    color:var(--text);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(224,167,68,.25)}
+
+  .frame{
+    max-width:600px;
+    margin:0 auto;
+    padding:56px 20px 80px;
+    animation:pageIn .5s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes pageIn{
+    from{opacity:0; transform:translateY(8px)}
+    to{opacity:1; transform:translateY(0)}
+  }
+
+  h1{
+    font-size:clamp(23px,4vw,28px);
+    font-weight:700;
+    letter-spacing:-0.02em;
+    margin:0 0 6px;
+  }
+  .subhead{
+    font-size:14px;
+    color:var(--text-dim);
+    margin:0 0 34px;
+    line-height:1.5;
+  }
+
+  .eyebrow{
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.03em;
+    color:var(--text-faint);
+    margin:0 0 10px;
+  }
+
+  /* ---- Inputs ---- */
+  .inputs{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:28px;
+  }
+  .field label{
+    display:block;
+    font-size:12px;
+    color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  input{
+    width:100%;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    font-family:var(--mono);
+    font-size:19px;
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+    color:var(--text);
+    box-shadow:0 1px 2px rgba(0,0,0,.2);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  input::placeholder{color:var(--text-faint);font-weight:500}
+  input:hover{border-color:#33394680}
+  input:focus{
+    outline:none;
+    border-color:var(--amber);
+    box-shadow:0 0 0 3px rgba(224,167,68,.15);
+  }
+
+  /* ---- Snapshot cards ---- */
+  .snapshot{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    box-shadow:0 1px 2px rgba(0,0,0,.2);
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{
+    transform:translateY(-2px);
+    border-color:#333a47;
+    box-shadow:0 8px 20px rgba(0,0,0,.28);
+  }
+  .card .label{
+    font-size:12px;
+    color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  .card .value{
+    font-family:var(--mono);
+    font-size:25px;
+    font-weight:700;
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+  }
+  .card .value.teal{color:var(--teal)}
+  .card .value.orange{color:var(--orange)}
+  .card .value.red{color:var(--red)}
+
+  /* ---- Loss gauge ---- */
+  .gauge-wrap{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:32px;
+    box-shadow:0 1px 2px rgba(0,0,0,.2);
+  }
+  .gauge-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    font-size:12px;
+    color:var(--text-faint);
+  }
+  .gauge-reading{
+    font-family:var(--mono);
+    font-weight:700;
+    color:var(--text);
+    font-size:13px;
+    font-variant-numeric:tabular-nums;
+    transition:color .3s ease;
+  }
+  .gauge-track{
+    position:relative;
+    height:7px;
+    border-radius:4px;
+    background:var(--line);
+    overflow:hidden;
+  }
+  .gauge-fill{
+    position:absolute;
+    top:0;left:0;bottom:0;
+    width:0%;
+    border-radius:4px;
+    background:var(--green);
+    transition:width .4s cubic-bezier(.16,1,.3,1), background-color .4s ease;
+  }
+
+  /* ---- Analysis card ---- */
+  .analysis{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px;
+    box-shadow:0 1px 2px rgba(0,0,0,.2);
+  }
+  .analysis-empty{
+    color:var(--text-faint);
+    font-size:14px;
+    text-align:center;
+    padding:16px 0;
+  }
+  @keyframes cardUpdate{
+    from{opacity:0; transform:translateY(3px)}
+    to{opacity:1; transform:translateY(0)}
+  }
+  .analysis-content{animation:cardUpdate .35s cubic-bezier(.16,1,.3,1) both;}
+
+  .status-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .priority-dot{
+    width:8px;height:8px;border-radius:50%;
+    flex-shrink:0;
+    background:currentColor;
+  }
+  .status-text{
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:-.005em;
+  }
+  .priority-word{
+    font-size:12px;
+    font-weight:600;
+    margin-left:auto;
+  }
+  .low{color:var(--green)}
+  .medium{color:var(--yellow)}
+  .high{color:var(--orange)}
+  .critical{color:var(--red)}
+
+  .block{margin-bottom:16px}
+  .block:last-child{margin-bottom:0}
+  .block-title{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  .block-body{
+    font-size:15px;
+    line-height:1.55;
+    color:var(--text);
+  }
+  .block-body.dim{
+    font-size:14px;
+    color:var(--text-dim);
+  }
+  ul.steps{
+    margin:0;
+    padding-left:18px;
+  }
+  ul.steps li{
+    font-size:14px;
+    line-height:1.6;
+    color:var(--text);
+    margin-bottom:2px;
+  }
+  .impact-text{
+    font-size:14px;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+  .impact-text strong{color:var(--teal);font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  @media (max-width:520px){
+    .inputs,.snapshot{grid-template-columns:1fr}
+  }
+</style>
 </head>
 <body>
-  <div class="container">
+  <div class="frame">
+
     <h1>WallStreet Calculator</h1>
+    <p class="subhead">See where things stand right now, and what to focus on next.</p>
 
-    <div class="section">
-      <div class="inputs">
-        <input id="arrivals" type="number" placeholder="Arrivals" min="0">
-        <input id="recruited" type="number" placeholder="Recruited" min="0">
-        <input id="incity" type="number" placeholder="In-City" min="0">
+    <div class="eyebrow">Numbers</div>
+    <div class="inputs">
+      <div class="field">
+        <label for="arrivals">Arrivals</label>
+        <input id="arrivals" type="number" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label for="recruited">Recruited</label>
+        <input id="recruited" type="number" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label for="incity">On panel</label>
+        <input id="incity" type="number" placeholder="0" min="0">
       </div>
     </div>
 
-    <div class="section snapshot">
+    <div class="eyebrow">Snapshot</div>
+    <div class="snapshot">
       <div class="card">
-        <div class="label">RECRUITMENT RATE</div>
-        <div class="value" id="rateVal">0%</div>
+        <div class="label">Recruit rate</div>
+        <div class="value teal" id="rateVal">0%</div>
       </div>
       <div class="card">
-        <div class="label">BEGINNER LOSS RATE</div>
-        <div class="value" id="lossVal">0%</div>
+        <div class="label">Loss rate</div>
+        <div class="value orange" id="lossVal">0%</div>
       </div>
       <div class="card">
-        <div class="label">BEGINNERS LOST</div>
-        <div class="value" id="lostVal">0</div>
+        <div class="label">Lost</div>
+        <div class="value red" id="lostVal">0</div>
       </div>
     </div>
 
-    <div class="section">
-      <div class="analysis" id="analysisBox">
-        Enter numbers to view operational guidance.
+    <div class="gauge-wrap">
+      <div class="gauge-top">
+        <span>Loss level</span>
+        <span class="gauge-reading" id="gaugeReading">0.0%</span>
+      </div>
+      <div class="gauge-track">
+        <div class="gauge-fill" id="gaugeFill"></div>
       </div>
     </div>
+
+    <div class="eyebrow">What to do</div>
+    <div class="analysis" id="analysisBox">
+      <div class="analysis-empty">Enter numbers above to see what's going on.</div>
+    </div>
+
   </div>
 
 <script>
-  function makeSteps(arr) {
-    return arr.map(step => `<div class="step">• ${step}</div>`).join("");
+  // ---- number tween helper (avoids jarring instant jumps) ----
+  function tween(el, from, to, decimals) {
+    const duration = 280;
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const val = from + (to - from) * eased;
+      el.textContent = decimals === null ? Math.round(val) : val.toFixed(decimals) + "%";
+      if (t < 1) requestAnimationFrame(frame);
+      else el.textContent = decimals === null ? to : to.toFixed(decimals) + "%";
+    }
+    requestAnimationFrame(frame);
+  }
+
+  const prev = { rate: 0, loss: 0, lost: 0 };
+  let lastStatus = null;
+
+  function updateGauge(rate) {
+    const capped = Math.max(0, Math.min(rate, 50));
+    const pct = (capped / 50) * 100;
+    const fill = document.getElementById("gaugeFill");
+    fill.style.width = pct + "%";
+    let color = "var(--green)";
+    if (rate >= 35) color = "var(--red)";
+    else if (rate >= 25) color = "var(--orange)";
+    else if (rate >= 18) color = "var(--yellow)";
+    fill.style.background = color;
+    document.getElementById("gaugeReading").textContent = rate.toFixed(1) + "%";
+  }
+
+  function backlogLevel(inCity) {
+    if (inCity >= 7) return "stacked";
+    if (inCity >= 4) return "building";
+    if (inCity >= 1) return "light";
+    return "none";
+  }
+
+  function lossLevel(rate) {
+    if (rate >= 25) return "severe";
+    if (rate >= 18) return "rising";
+    return "fine";
+  }
+
+  const priorityTable = {
+    none:     { fine: "low",    rising: "medium", severe: "critical" },
+    light:    { fine: "low",    rising: "medium", severe: "high" },
+    building: { fine: "medium", rising: "medium", severe: "high" },
+    stacked:  { fine: "high",   rising: "high",   severe: "critical" }
+  };
+
+  function renderAnalysis(html, status) {
+    const box = document.getElementById("analysisBox");
+    box.innerHTML = `<div class="analysis-content">${html}</div>`;
+    if (status !== lastStatus) {
+      const content = box.querySelector(".analysis-content");
+      content.style.animation = "none";
+      void content.offsetWidth;
+      content.style.animation = "";
+    }
+    lastStatus = status;
   }
 
   function analyse() {
@@ -133,206 +400,122 @@
     const beginnerLossRate = arrivals > 0 ? (lost / arrivals) * 100 : 0;
     const clearedRate = arrivals > 0 ? ((recruited + inCity) / arrivals) * 100 : 0;
 
-    document.getElementById("lostVal").textContent = lost;
-    document.getElementById("rateVal").textContent = recruitmentRate.toFixed(1) + "%";
-    document.getElementById("lossVal").textContent = beginnerLossRate.toFixed(1) + "%";
+    tween(document.getElementById("rateVal"), prev.rate, recruitmentRate, 1);
+    tween(document.getElementById("lossVal"), prev.loss, beginnerLossRate, 1);
+    tween(document.getElementById("lostVal"), prev.lost, lost, null);
+    prev.rate = recruitmentRate; prev.loss = beginnerLossRate; prev.lost = lost;
+    updateGauge(beginnerLossRate);
 
-    let status = "";
-    let priority = "";
-    let priorityClass = "";
-    let action = "";
-    let reason = "";
-    let steps = [];
-    let clearPanelText = "";
-    let note = "";
-
-    // No active flow
     if (arrivals === 0 && recruited === 0 && inCity === 0) {
-      status = "No active flow";
-      priority = "Low";
-      priorityClass = "low";
-      action = "Keep supervision at pier and remain ready for peak time.";
-      reason = "There is no current panel pressure.";
+      renderAnalysis(`
+        <div class="status-row low">
+          <span class="priority-dot"></span>
+          <span class="status-text">No arrivals yet</span>
+          <span class="priority-word">Low</span>
+        </div>
+        <div class="block">
+          <div class="block-title">What to do</div>
+          <div class="block-body">Stay at the pier and be ready for beginners to start arriving.</div>
+        </div>
+      `, "idle");
+      return;
+    }
+
+    const backlog = backlogLevel(inCity);
+    const loss = lossLevel(beginnerLossRate);
+    const priorityClass = priorityTable[backlog][loss];
+    const priorityLabel = priorityClass.charAt(0).toUpperCase() + priorityClass.slice(1);
+    const hasBacklog = inCity > 0;
+
+    let status, action, why, steps;
+
+    if (backlog === "stacked") {
+      status = loss === "severe" ? "Panel's stacked and you're already losing beginners"
+             : loss === "rising" ? "Panel's stacked and losses are creeping up"
+             : "Panel's stacked";
+      action = "Get on dots now — clear the panel oldest first, and keep pier covered for new arrivals.";
+      why = loss === "fine"
+        ? "Recruitment's still solid, but leave a panel this size much longer and that'll change."
+        : "Panel's been sitting too long — that's already costing you recruits.";
       steps = [
-        "Keep WS at pier",
-        "Be ready for beginners flying in",
-        "Do not spread out without a reason"
+        "Hop on dots, oldest beginners first",
+        "Keep enough people on pier for new arrivals",
+        "Spread back out once panel's clear"
       ];
-      clearPanelText = "There is no panel to clear right now.";
-      note = "There is no need to spread out at the moment. Keep WS at pier and be ready to pick beginners up as they come in.";
-    }
-
-    // Panel stacked + high beginner loss
-    else if (inCity >= 7 && beginnerLossRate >= 25) {
-      status = "Panel stacked and beginner loss is high";
-      priority = "Critical";
-      priorityClass = "critical";
-      action = "Clear the in-city panel and stabilise immediately.";
-      reason = "The panel is stacked and beginner loss is already high, so this needs dealing with now to prevent further loss.";
+    } else if (backlog === "building") {
+      status = loss === "severe" ? "Panel's building and you're already losing beginners"
+             : "Panel's starting to stack";
+      action = "Split time between pier and dots — clear the panel before it builds further.";
+      why = loss === "severe"
+        ? "Loss is already high, and the panel building on top of that isn't helping."
+        : "A few beginners are sitting on panel — worth clearing now before it stacks up.";
       steps = [
-        "Recruit beginners in-city immediately",
-        "Help beginners that have been in city for the longest first",
-        "Keep enough members at pier for new arrivals",
-        "Stabilise recruitment and beginners entering after clearing panel"
+        "Split focus between pier and dots",
+        "Help whoever's been waiting longest first",
+        "Don't let pier go uncovered while you do this"
       ];
-      clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "This is no longer just a stacked panel. Beginners have already been lost, so the priority is to clear those still in city and prevent further loss.";
+    } else if (backlog === "light") {
+      status = loss === "severe" ? "Losing beginners despite barely any panel"
+             : loss === "rising" ? "Panel's light, keep an eye on losses"
+             : "Panel's under control";
+      action = loss === "severe"
+        ? "Clear the few on panel, but the real fix is speeding up at pier."
+        : "Clear panel when you get a sec, keep pier as the priority.";
+      why = loss === "severe"
+        ? "Most of what you're losing never even makes it to panel — they're leaving right at pier."
+        : loss === "rising"
+        ? "Nothing urgent yet, but losses are ticking up — worth watching."
+        : "Recruitment's solid and panel's basically empty.";
+      steps = loss === "severe"
+        ? ["Clear the beginners currently on panel", "Prioritise pier coverage", "Recruit arrivals as soon as they land"]
+        : ["Clear the beginners currently on panel", "Keep pier as the main focus"];
+    } else { // none
+      status = loss === "severe" ? "Beginners are leaving before they hit panel"
+             : loss === "rising" ? "A few beginners are slipping through"
+             : "Running smoothly";
+      action = loss === "fine"
+        ? "Keep doing what you're doing."
+        : "Get on pier properly — beginners are leaving before anyone even reaches them.";
+      why = loss === "severe"
+        ? "No one's on panel, so what you're losing is happening right at pier, before anyone gets to them."
+        : loss === "rising"
+        ? "Losses are creeping up even with no panel forming — usually means pier needs tighter coverage."
+        : "Recruitment's solid and panel's empty.";
+      steps = loss === "fine"
+        ? ["Keep pier covered", "Stay ready for peak time"]
+        : ["Make sure pier is fully covered", "Recruit arrivals as soon as they land", "Don't leave new arrivals unattended"];
     }
 
-    // Panel stacked + medium beginner loss
-    else if (inCity >= 7 && beginnerLossRate >= 18) {
-      status = "Panel stacked and loss is rising";
-      priority = "High";
-      priorityClass = "high";
-      action = "Clear the in-city panel before more beginners are lost.";
-      reason = "The panel is stacked and beginner loss is already starting to rise.";
-      steps = [
-        "Recruit beginners in-city immediately",
-        "Help beginners that have been in city for the longest first",
-        "Keep enough at pier for new arrivals",
-        "Balance WallStreet through Pier and Dots when panel cleared"
-      ];
-      clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "The panel is stacked and beginner loss is already rising. Help beginners that have been in city for the longest first before more of them get bored and leave.";
-    }
+    const impactBlock = hasBacklog ? `
+      <div class="block">
+        <div class="block-title">If panel's cleared now</div>
+        <div class="impact-text">Recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.</div>
+      </div>` : "";
 
-    // Panel stacked only
-    else if (inCity >= 7) {
-      status = "Panel stacked";
-      priority = "High";
-      priorityClass = "high";
-      action = "Clear the beginners off panel in city.";
-      reason = "Too many beginners are sitting in-city and need to be helped before they leave.";
-      steps = [
-        "Recruit beginners in-city immediately",
-        "Help beginners that have been in city for the longest first",
-        "Keep enough at pier for new arrivals",
-        "Balance WallStreet through Pier and Dots when panel cleared"
-      ];
-      clearPanelText = `If panel is cleared now, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "A stacked panel means beginners need to be helped before they get bored and leave. Prioritise the oldest beginners first.";
-    }
+    renderAnalysis(`
+      <div class="status-row ${priorityClass}">
+        <span class="priority-dot"></span>
+        <span class="status-text">${status}</span>
+        <span class="priority-word">${priorityLabel}</span>
+      </div>
 
-    // Panel building + high beginner loss
-    else if (inCity >= 4 && beginnerLossRate >= 25) {
-      status = "Panel building and beginner loss is high";
-      priority = "High";
-      priorityClass = "high";
-      action = "Recruit Beginners currently in city + Control beginners flying in at pier";
-      reason = "Beginner loss is already too high and the panel is still building.";
-      steps = [
-        "Keep pier properly covered",
-        "Clear red + green dots",
-        "Help beginners that have been in city for the longest first",
-        "Do not let the panel keep stacking"
-      ];
-      clearPanelText = `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "Beginners have already been lost and the panel is still building. Clear panel and monitor panel before the situation gets worse.";
-    }
+      <div class="block">
+        <div class="block-title">What to do</div>
+        <div class="block-body">${action}</div>
+      </div>
 
-    // Panel building
-    else if (inCity >= 4) {
-      status = "Panel building";
-      priority = "Medium";
-      priorityClass = "medium";
-      action = "Split beginner coverage between pier and F1 panel.";
-      reason = "The panel is starting to build and needs dealing with early.";
-      steps = [
-        "Keep pier covered",
-        "Spread WallStreet onto dots",
-        "Help beginners that have been in city for the longest first",
-        "Stop the panel from stacking further - Recruit efficiently"
-      ];
-      clearPanelText = `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`;
-      note = "The panel is building. Deal with it early so beginners are not left sitting long enough to get bored and leave.";
-    }
+      <div class="block">
+        <div class="block-title">Why</div>
+        <div class="block-body dim">${why}</div>
+      </div>
 
-    // High beginner loss
-    else if (beginnerLossRate >= 25) {
-      status = "Beginner loss is too high";
-      priority = "Critical";
-      priorityClass = "critical";
-      action = "Get on dots and recruit the beginners still in city.";
-      reason = "Too many beginners have already been lost and the current flow needs recovering.";
-      steps = [
-        "Make sure pier is properly covered",
-        "Recruit the beginners still in city as quickly as possible",
-        "Help the oldest waiting beginners first",
-        "Stop anything unnecessary until numbers settle"
-      ];
-      clearPanelText = inCity > 0
-        ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
-        : "This is mainly a coverage issue rather than a panel issue right now.";
-      note = "At this stage some beginners have already been lost because they were not helped, got bored and left. The priority now is to stabilise and improve the flow from here.";
-    }
+      <div class="block">
+        <div class="block-title">Steps</div>
+        <ul class="steps">${steps.map(s => `<li>${s}</li>`).join("")}</ul>
+      </div>
 
-    // Medium beginner loss
-    else if (beginnerLossRate >= 18) {
-      status = "Do not let more beginners get bored and leave";
-      priority = "Medium";
-      priorityClass = "medium";
-      action = "Clear current panel";
-      reason = "Beginner loss is starting to rise and needs correcting now.";
-      steps = [
-        "Recruit faster and more efficiently",
-        "Watch pier more closely",
-        "Help the beginners that have been in city for the longest",
-        "Do not let beginners explore alone or they will get bored and leave"
-      ];
-      clearPanelText = inCity > 0
-        ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
-        : "There is no significant panel to clear at the moment.";
-      note = "This is the warning stage. If beginners are not helped quickly enough, they get bored and start leaving.";
-    }
-
-    // Good position
-    else {
-      status = inCity <= 1 ? "Pier focus" : "Panel under control";
-      priority = "Low";
-      priorityClass = "low";
-      action = inCity <= 1
-        ? "Keep the main focus at pier."
-        : "Keep recruiting efficiently.";
-      reason = inCity <= 1
-        ? "Beginner loss is in a good range and there is little in-city pressure."
-        : "Beginner loss is in a good range and the panel is manageable.";
-      steps = inCity <= 1
-        ? [
-            "Keep most people at pier",
-            "Recruit beginners efficiently",
-            "Only get people on dots if panel starts to stack",
-            "Stay prepared for peak time (6-10pm)"
-          ]
-        : [
-            "Keep pier supervised",
-            "Keep checking in-city",
-            "Help beginners that have been in city for the longest first",
-            "Do not let the panel build unnecessarily"
-          ];
-      clearPanelText = inCity > 0
-        ? `If current in-city beginners are recruited, recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.`
-        : "Panel is already in a good position.";
-      note = "This is a good position, but beginners still need to be helpd + recruited so they are not left waiting, get bored and leave.";
-    }
-
-    document.getElementById("analysisBox").innerHTML = `
-      <div class="status">${status}</div>
-      <div class="priority ${priorityClass}">Priority: ${priority}</div>
-
-      <div class="sectionTitle">Action</div>
-      ${action}
-
-      <div class="sectionTitle">Reason</div>
-      <div class="note">${reason}</div>
-
-      <div class="sectionTitle">Steps</div>
-      ${makeSteps(steps)}
-
-      <div class="sectionTitle">If panel cleared now</div>
-      ${clearPanelText}
-
-      <div class="small">${note}</div>
-    `;
+      ${impactBlock}
+    `, status);
   }
 
   document.getElementById("arrivals").addEventListener("input", analyse);
