@@ -3,21 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WallStreet Calculator</title>
+<title>Understand Your Panel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0d0f13;
-    --panel:transparent;
-    --panel-hi:#1a1e25;
     --line:#252932;
     --text:#eceef1;
     --text-dim:#9198a3;
     --text-faint:#5b6270;
     --amber:#c94141;
-    --crimson-deep:#5a1a22;
-    --teal:#c9a24a;
+    --gold:#c9a24a;
     --green:#4ac47c;
     --yellow:#e0c04a;
     --orange:#e8964c;
@@ -38,281 +35,76 @@
     position:relative;
     overflow-x:hidden;
   }
-  body::before,body::after{
-    content:"";
-    position:fixed;
-    border-radius:50%;
-    filter:blur(90px);
-    pointer-events:none;
-    z-index:0;
-  }
-  body::before{
-    width:480px;height:480px;
-    background:rgba(201,65,65,0.16);
-    top:-160px;left:-120px;
-    animation:driftA 16s ease-in-out infinite;
-  }
-  body::after{
-    width:420px;height:420px;
-    background:rgba(90,26,34,0.24);
-    bottom:-160px;right:-100px;
-    animation:driftB 19s ease-in-out infinite;
-  }
-  @keyframes driftA{
-    0%,100%{transform:translate(0,0) scale(1);opacity:.75}
-    50%{transform:translate(40px,25px) scale(1.15);opacity:1}
-  }
-  @keyframes driftB{
-    0%,100%{transform:translate(0,0) scale(1);opacity:.65}
-    50%{transform:translate(-30px,-20px) scale(1.1);opacity:.9}
-  }
-  @media (prefers-reduced-motion: reduce){
-    body::before,body::after{animation:none}
-  }
-  ::selection{background:rgba(224,167,68,.25)}
+  body::before,body::after{content:"";position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+  body::before{width:480px;height:480px;background:rgba(201,65,65,0.16);top:-160px;left:-120px;animation:driftA 16s ease-in-out infinite}
+  body::after{width:420px;height:420px;background:rgba(90,26,34,0.24);bottom:-160px;right:-100px;animation:driftB 19s ease-in-out infinite}
+  @keyframes driftA{0%,100%{transform:translate(0,0) scale(1);opacity:.75}50%{transform:translate(40px,25px) scale(1.15);opacity:1}}
+  @keyframes driftB{0%,100%{transform:translate(0,0) scale(1);opacity:.65}50%{transform:translate(-30px,-20px) scale(1.1);opacity:.9}}
+  @media (prefers-reduced-motion: reduce){body::before,body::after{animation:none}}
+  ::selection{background:rgba(201,65,65,.25)}
 
-  .frame{
-    max-width:600px;
-    margin:0 auto;
-    padding:56px 20px 80px;
-    animation:pageIn .5s cubic-bezier(.16,1,.3,1) both;
-    position:relative;
-    z-index:1;
-  }
-  @keyframes pageIn{
-    from{opacity:0; transform:translateY(8px)}
-    to{opacity:1; transform:translateY(0)}
-  }
+  .frame{max-width:600px;margin:0 auto;padding:48px 20px 70px;animation:pageIn .5s cubic-bezier(.16,1,.3,1) both;position:relative;z-index:1}
+  @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-  h1{
-    font-size:clamp(23px,4vw,28px);
-    font-weight:700;
-    letter-spacing:-0.02em;
-    margin:0 0 6px;
-  }
-  .subhead{
-    font-size:14px;
-    color:var(--text-dim);
-    margin:0 0 34px;
-    line-height:1.5;
-  }
+  h1{font-size:clamp(22px,4vw,26px);font-weight:700;letter-spacing:-0.02em;margin:0 0 4px}
+  .subhead{font-size:13.5px;color:var(--text-dim);margin:0 0 28px}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.03em;color:var(--text-faint);margin:0 0 8px}
 
-  .eyebrow{
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:.03em;
-    color:var(--text-faint);
-    margin:0 0 10px;
-  }
 
-  /* ---- Inputs ---- */
-  .inputs{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-bottom:28px;
-  }
-  .field label{
-    display:block;
-    font-size:12px;
-    color:var(--text-faint);
-    margin-bottom:6px;
-  }
+  .inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+  .field label{display:block;font-size:12px;color:var(--text-faint);margin-bottom:6px}
   input{
-    width:100%;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:12px 14px;
-    font-family:var(--mono);
-    font-size:19px;
-    font-weight:600;
-    font-variant-numeric:tabular-nums;
-    color:var(--text);
-    box-shadow:0 1px 2px rgba(0,0,0,.2);
+    width:100%;background:transparent;border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;font-family:var(--mono);font-size:19px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--text);
     transition:border-color .15s ease, box-shadow .15s ease;
   }
   input::placeholder{color:var(--text-faint);font-weight:500}
-  input:hover{border-color:#33394680}
-  input:focus{
-    outline:none;
-    border-color:var(--amber);
-    box-shadow:0 0 0 3px rgba(224,167,68,.15);
-  }
+  input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(201,65,65,.15)}
 
-  /* ---- Snapshot cards ---- */
-  .snapshot{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-bottom:24px;
-  }
-  .card{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:16px;
-    box-shadow:0 1px 2px rgba(0,0,0,.2);
-    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-  }
-  .card:hover{
-    transform:translateY(-2px);
-    border-color:#333a47;
-    box-shadow:0 8px 20px rgba(0,0,0,.28);
-  }
-  .card .label{
-    font-size:12px;
-    color:var(--text-faint);
-    margin-bottom:6px;
-  }
-  .card .value{
-    font-family:var(--mono);
-    font-size:25px;
-    font-weight:700;
-    line-height:1;
-    font-variant-numeric:tabular-nums;
-  }
-  .card .value.teal{color:var(--teal)}
+  .snapshot{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+  .card{border:1px solid var(--line);border-radius:10px;padding:14px;transition:transform .15s ease, border-color .15s ease}
+  .card:hover{transform:translateY(-2px);border-color:#333a47}
+  .card .label{font-size:11.5px;color:var(--text-faint);margin-bottom:5px}
+  .card .value{font-family:var(--mono);font-size:23px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+  .card .value.gold{color:var(--gold)}
   .card .value.orange{color:var(--orange)}
   .card .value.red{color:var(--red)}
 
-  /* ---- Loss gauge ---- */
-  .gauge-wrap{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:16px;
-    margin-bottom:32px;
-    box-shadow:0 1px 2px rgba(0,0,0,.2);
-  }
-  .gauge-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:10px;
-    font-size:12px;
-    color:var(--text-faint);
-  }
-  .gauge-reading{
-    font-family:var(--mono);
-    font-weight:700;
-    color:var(--text);
-    font-size:13px;
-    font-variant-numeric:tabular-nums;
-    transition:color .3s ease;
-  }
-  .gauge-track{
-    position:relative;
-    height:7px;
-    border-radius:4px;
-    background:var(--line);
-    overflow:hidden;
-  }
-  .gauge-fill{
-    position:absolute;
-    top:0;left:0;bottom:0;
-    width:0%;
-    border-radius:4px;
-    background:var(--green);
-    transition:width .4s cubic-bezier(.16,1,.3,1), background-color .4s ease;
-  }
+  .gauge-wrap{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:24px}
+  .gauge-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:12px;color:var(--text-faint)}
+  .gauge-reading{font-family:var(--mono);font-weight:700;color:var(--text);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .gauge-track{position:relative;height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+  .gauge-fill{position:absolute;top:0;left:0;bottom:0;width:0%;border-radius:4px;background:var(--green);transition:width .4s cubic-bezier(.16,1,.3,1), background-color .4s ease}
+  .clear-note{font-size:12px;color:var(--text-faint);margin-top:8px}
+  .clear-note strong{color:var(--gold);font-family:var(--mono)}
 
-  /* ---- Analysis card ---- */
-  .analysis{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:24px;
-    box-shadow:0 1px 2px rgba(0,0,0,.2);
-  }
-  .analysis-empty{
-    color:var(--text-faint);
-    font-size:14px;
-    text-align:center;
-    padding:16px 0;
-  }
-  @keyframes cardUpdate{
-    from{opacity:0; transform:translateY(3px)}
-    to{opacity:1; transform:translateY(0)}
-  }
-  .analysis-content{animation:cardUpdate .35s cubic-bezier(.16,1,.3,1) both;}
+  .analysis{border:1px solid var(--line);border-radius:10px;padding:20px}
+  .analysis-empty{color:var(--text-faint);font-size:13.5px;text-align:center;padding:14px 0}
+  @keyframes cardUpdate{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+  .analysis-content{animation:cardUpdate .35s cubic-bezier(.16,1,.3,1) both}
+  .status-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+  .priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:currentColor}
+  .status-text{font-size:16px;font-weight:700;letter-spacing:-.005em}
+  .priority-word{font-size:11.5px;font-weight:600;margin-left:auto}
+  .low{color:var(--green)} .medium{color:var(--yellow)} .high{color:var(--orange)} .critical{color:var(--red)}
+  .action-line{font-size:15px;line-height:1.5;color:var(--text);margin-bottom:12px}
+  ul.steps{margin:0;padding-left:16px}
+  ul.steps li{font-size:13px;line-height:1.6;color:var(--text-dim)}
 
-  .status-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-  }
-  .priority-dot{
-    width:8px;height:8px;border-radius:50%;
-    flex-shrink:0;
-    background:currentColor;
-  }
-  .status-text{
-    font-size:17px;
-    font-weight:700;
-    letter-spacing:-.005em;
-  }
-  .priority-word{
-    font-size:12px;
-    font-weight:600;
-    margin-left:auto;
-  }
-  .low{color:var(--green)}
-  .medium{color:var(--yellow)}
-  .high{color:var(--orange)}
-  .critical{color:var(--red)}
-
-  .block{margin-bottom:16px}
-  .block:last-child{margin-bottom:0}
-  .block-title{
-    font-size:12px;
-    font-weight:600;
-    color:var(--text-faint);
-    margin-bottom:6px;
-  }
-  .block-body{
-    font-size:15px;
-    line-height:1.55;
-    color:var(--text);
-  }
-  .block-body.dim{
-    font-size:14px;
-    color:var(--text-dim);
-  }
-  ul.steps{
-    margin:0;
-    padding-left:18px;
-  }
-  ul.steps li{
-    font-size:14px;
-    line-height:1.6;
-    color:var(--text);
-    margin-bottom:2px;
-  }
-  .impact-text{
-    font-size:14px;
-    color:var(--text-dim);
-    line-height:1.5;
-  }
-  .impact-text strong{color:var(--teal);font-family:var(--mono);font-variant-numeric:tabular-nums}
-
-  @media (max-width:520px){
-    .inputs,.snapshot{grid-template-columns:1fr}
-  }
+  @media (max-width:520px){.inputs,.snapshot{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
   <div class="frame">
 
-    <h1>WallStreet Calculator</h1>
-    <p class="subhead">See where things stand right now, and what to focus on next.</p>
+    <h1>Understand Your Panel</h1>
+    <p class="subhead">The WallStreet Calculator. Enter your numbers.</p>
 
     <div class="eyebrow">Numbers</div>
     <div class="inputs">
       <div class="field">
-        <label for="arrivals">Arrivals</label>
+        <label for="arrivals">Whitelist</label>
         <input id="arrivals" type="number" placeholder="0" min="0">
       </div>
       <div class="field">
@@ -327,41 +119,27 @@
 
     <div class="eyebrow">Snapshot</div>
     <div class="snapshot">
-      <div class="card">
-        <div class="label">Recruit rate</div>
-        <div class="value teal" id="rateVal">0%</div>
-      </div>
-      <div class="card">
-        <div class="label">Loss rate</div>
-        <div class="value orange" id="lossVal">0%</div>
-      </div>
-      <div class="card">
-        <div class="label">Lost</div>
-        <div class="value red" id="lostVal">0</div>
-      </div>
+      <div class="card"><div class="label">Recruit rate</div><div class="value gold" id="rateVal">0%</div></div>
+      <div class="card"><div class="label">Loss rate</div><div class="value orange" id="lossVal">0%</div></div>
+      <div class="card"><div class="label">Lost</div><div class="value red" id="lostVal">0</div></div>
     </div>
 
     <div class="gauge-wrap">
-      <div class="gauge-top">
-        <span>Loss level</span>
-        <span class="gauge-reading" id="gaugeReading">0.0%</span>
-      </div>
-      <div class="gauge-track">
-        <div class="gauge-fill" id="gaugeFill"></div>
-      </div>
+      <div class="gauge-top"><span>Loss level</span><span class="gauge-reading" id="gaugeReading">0.0%</span></div>
+      <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
+      <div class="clear-note" id="clearNote" style="display:none"></div>
     </div>
 
     <div class="eyebrow">What to do</div>
     <div class="analysis" id="analysisBox">
-      <div class="analysis-empty">Enter numbers above to see what's going on.</div>
+      <div class="analysis-empty">Enter your numbers above.</div>
     </div>
 
   </div>
 
 <script>
-  // ---- number tween helper (avoids jarring instant jumps) ----
   function tween(el, from, to, decimals) {
-    const duration = 280;
+    const duration = 260;
     const start = performance.now();
     function frame(now) {
       const t = Math.min((now - start) / duration, 1);
@@ -396,13 +174,11 @@
     if (inCity >= 1) return "light";
     return "none";
   }
-
   function lossLevel(rate) {
     if (rate >= 25) return "severe";
     if (rate >= 18) return "rising";
     return "fine";
   }
-
   const priorityTable = {
     none:     { fine: "low",    rising: "medium", severe: "critical" },
     light:    { fine: "low",    rising: "medium", severe: "high" },
@@ -438,17 +214,18 @@
     prev.rate = recruitmentRate; prev.loss = beginnerLossRate; prev.lost = lost;
     updateGauge(beginnerLossRate);
 
+    const clearNote = document.getElementById("clearNote");
+    if (inCity > 0) {
+      clearNote.style.display = "block";
+      clearNote.innerHTML = `Clear panel now → <strong>${clearedRate.toFixed(1)}%</strong> recruited.`;
+    } else {
+      clearNote.style.display = "none";
+    }
+
     if (arrivals === 0 && recruited === 0 && inCity === 0) {
       renderAnalysis(`
-        <div class="status-row low">
-          <span class="priority-dot"></span>
-          <span class="status-text">No arrivals yet</span>
-          <span class="priority-word">Low</span>
-        </div>
-        <div class="block">
-          <div class="block-title">What to do</div>
-          <div class="block-body">Stay at the pier and be ready for beginners to start arriving.</div>
-        </div>
+        <div class="status-row low"><span class="priority-dot"></span><span class="status-text">No arrivals yet</span><span class="priority-word">Low</span></div>
+        <div class="action-line">Stay on pier, ready for arrivals.</div>
       `, "idle");
       return;
     }
@@ -457,96 +234,39 @@
     const loss = lossLevel(beginnerLossRate);
     const priorityClass = priorityTable[backlog][loss];
     const priorityLabel = priorityClass.charAt(0).toUpperCase() + priorityClass.slice(1);
-    const hasBacklog = inCity > 0;
 
-    let status, action, why, steps;
+    let status, action, steps = [];
 
     if (backlog === "stacked") {
-      status = loss === "severe" ? "Panel's stacked and you're already losing beginners"
-             : loss === "rising" ? "Panel's stacked and losses are creeping up"
-             : "Panel's stacked";
-      action = "Get on dots now, clear the panel oldest first, and keep pier covered for new arrivals.";
-      why = loss === "fine"
-        ? "Recruitment's still solid, but leave a panel this size much longer and that'll change."
-        : "Panel's been sitting too long, and that's already costing you recruits.";
-      steps = [
-        "Hop on dots, oldest beginners first",
-        "Keep enough people on pier for new arrivals",
-        "Spread back out once panel's clear"
-      ];
+      status = loss === "severe" ? "Panel stacked, already losing beginners"
+             : loss === "rising" ? "Panel stacked, losses climbing"
+             : "Panel stacked";
+      action = loss === "fine" ? "Clear panel before it costs recruits." : "Clear panel now, oldest first. Keep pier covered.";
+      steps = ["Oldest on panel first", "Don't leave pier empty"];
     } else if (backlog === "building") {
-      status = loss === "severe" ? "Panel's building and you're already losing beginners"
-             : "Panel's starting to stack";
-      action = "Split time between pier and dots, clear the panel before it builds further.";
-      why = loss === "severe"
-        ? "Loss is already high, and the panel building on top of that isn't helping."
-        : "A few beginners are sitting on panel. Worth clearing now before it stacks up.";
-      steps = [
-        "Split focus between pier and dots",
-        "Help whoever's been waiting longest first",
-        "Don't let pier go uncovered while you do this"
-      ];
+      status = loss === "severe" ? "Panel building, already losing beginners" : "Panel building";
+      action = loss === "severe" ? "Split time pier and panel. Clear it before it grows." : "Split time pier and panel before it stacks up.";
+      steps = ["Oldest first", "Keep pier covered"];
     } else if (backlog === "light") {
-      status = loss === "severe" ? "Losing beginners despite barely any panel"
-             : loss === "rising" ? "Panel's light, keep an eye on losses"
-             : "Panel's under control";
-      action = loss === "severe"
-        ? "Clear the few on panel, but the real fix is speeding up at pier."
-        : "Clear panel when you get a sec, keep pier as the priority.";
-      why = loss === "severe"
-        ? "Most of what you're losing never even makes it to panel. They're leaving right at pier."
-        : loss === "rising"
-        ? "Nothing urgent yet, but losses are ticking up. Worth watching."
-        : "Recruitment's solid and panel's basically empty.";
-      steps = loss === "severe"
-        ? ["Clear the beginners currently on panel", "Prioritise pier coverage", "Recruit arrivals as soon as they land"]
-        : ["Clear the beginners currently on panel", "Keep pier as the main focus"];
-    } else { // none
-      status = loss === "severe" ? "Beginners are leaving before they hit panel"
-             : loss === "rising" ? "A few beginners are slipping through"
+      status = loss === "severe" ? "Losing beginners, panel is light"
+             : loss === "rising" ? "Small panel, losses ticking up"
+             : "Panel under control";
+      action = loss === "severe" ? "Clear the few on panel. Pier speed is the real issue." : "Clear panel when free, pier stays priority.";
+      steps = loss === "severe" ? ["Recruit arrivals fast", "Panel isn't the problem"] : [];
+    } else {
+      status = loss === "severe" ? "Losing beginners at pier"
+             : loss === "rising" ? "A few slipping through"
              : "Running smoothly";
-      action = loss === "fine"
-        ? "Keep doing what you're doing."
-        : "Get on pier properly. Beginners are leaving before anyone even reaches them.";
-      why = loss === "severe"
-        ? "No one's on panel, so what you're losing is happening right at pier, before anyone gets to them."
-        : loss === "rising"
-        ? "Losses are creeping up even with no panel forming, usually means pier needs tighter coverage."
-        : "Recruitment's solid and panel's empty.";
-      steps = loss === "fine"
-        ? ["Keep pier covered", "Stay ready for peak time"]
-        : ["Make sure pier is fully covered", "Recruit arrivals as soon as they land", "Don't leave new arrivals unattended"];
+      action = loss === "fine" ? "Keep doing what you're doing." : "Focus pier. Recruit arrivals immediately, don't let them wait.";
+      steps = loss === "severe" ? ["Cover pier fully", "Don't leave arrivals unattended"] : [];
     }
 
-    const impactBlock = hasBacklog ? `
-      <div class="block">
-        <div class="block-title">If panel's cleared now</div>
-        <div class="impact-text">Recruitment would rise to <strong>${clearedRate.toFixed(1)}%</strong>.</div>
-      </div>` : "";
+    const stepsHtml = steps.length ? `<ul class="steps">${steps.map(s => `<li>${s}</li>`).join("")}</ul>` : "";
 
     renderAnalysis(`
-      <div class="status-row ${priorityClass}">
-        <span class="priority-dot"></span>
-        <span class="status-text">${status}</span>
-        <span class="priority-word">${priorityLabel}</span>
-      </div>
-
-      <div class="block">
-        <div class="block-title">What to do</div>
-        <div class="block-body">${action}</div>
-      </div>
-
-      <div class="block">
-        <div class="block-title">Why</div>
-        <div class="block-body dim">${why}</div>
-      </div>
-
-      <div class="block">
-        <div class="block-title">Steps</div>
-        <ul class="steps">${steps.map(s => `<li>${s}</li>`).join("")}</ul>
-      </div>
-
-      ${impactBlock}
+      <div class="status-row ${priorityClass}"><span class="priority-dot"></span><span class="status-text">${status}</span><span class="priority-word">${priorityLabel}</span></div>
+      <div class="action-line">${action}</div>
+      ${stepsHtml}
     `, status);
   }
 
