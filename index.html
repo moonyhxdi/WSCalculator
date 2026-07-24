@@ -43,6 +43,18 @@
   @media (prefers-reduced-motion: reduce){body::before,body::after{animation:none}}
   ::selection{background:rgba(201,65,65,.25)}
 
+  .back-btn{
+    position:fixed;top:18px;left:18px;z-index:20;
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--sans);font-size:13px;font-weight:600;
+    color:var(--text-dim);text-decoration:none;
+    background:rgba(13,15,19,0.7);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-radius:8px;
+    padding:8px 14px;
+    transition:color .15s ease, border-color .15s ease, transform .15s ease;
+  }
+  .back-btn:hover{color:var(--text);border-color:var(--amber);transform:translateX(-2px)}
+
   .frame{max-width:600px;margin:0 auto;padding:48px 20px 70px;animation:pageIn .5s cubic-bezier(.16,1,.3,1) both;position:relative;z-index:1}
   @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
@@ -96,6 +108,7 @@
 </style>
 </head>
 <body>
+  <a href="https://moonyhxdi.github.io/WallStreet-Guide/" class="back-btn">← Back</a>
   <div class="frame">
 
     <h1>Understand Your Panel</h1>
